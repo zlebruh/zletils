@@ -1,0 +1,23 @@
+{
+  "name": "zletils",
+  "version": "0.0.1",
+  "description": "My handy utils",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zlebruh/zletils.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zlebruh/zletils/issues"
+  },
+  "homepage": "https://github.com/zlebruh/zletils#readme"
+}
