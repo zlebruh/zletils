@@ -7,7 +7,7 @@ If, at least sometimes, you really care about guaranteed `run-time` type safety,
 
 ## Usage
 ```javascript
-import { typedProps } from 'zle-typed';
+import { typedProps } from 'zletils';
 
 const manyValues = {
   a: 1,
