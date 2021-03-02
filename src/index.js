@@ -1,3 +1,8 @@
+const CONSTANTS = {
+  Object: 'Object',
+  String: 'String',
+};
+
 const REGEX = {
   ip: /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/, /* jscs:ignore */ // eslint-disable-line
   url: /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/, /* jscs:ignore */ // eslint-disable-line
@@ -20,11 +25,18 @@ const TYPE_CHECKS = {
 
 // #################### EXPORTED ##################
 // ####### Types #######
-export function isType(VALUE, type) {
+export function isType(VALUE, type, checkEmpty = false) {
   try {
     if (VALUE === null) return VALUE === type;
 
-    return eval(TYPE_CHECKS[type]) || false;
+    const result = eval(TYPE_CHECKS[type]) || false;
+
+    if (result && checkEmpty === true) {
+      if (VALUE.hasOwnProperty('length')) return Boolean(VALUE.length);
+      return Boolean(Object.keys(VALUE).length);
+    }
+
+    return result;
   } catch (err) {
     console.warn(err);
     return false;
@@ -75,15 +87,15 @@ export function typedProp(state, strict = false) {
 
 export function typedProps(props) {
   const { values, target, strict = false } = props;
-  const refObj = {};
-  const noValues = !isType(values, refObj);
+  const type = CONSTANTS.Object;
+  const noValues = !isType(values, type);
 
-  if (noValues) { throwUnexpectedType(values, refObj, 'values'); }
+  if (noValues) { throwUnexpectedType(values, type, 'values'); }
 
   const result = {};
   Object.keys(values).forEach((key) => result[key] = typedProp(values[key], strict));
 
-  const noTarget = !isType(target, refObj);
+  const noTarget = !isType(target, type);
   const targetObject = noTarget
     ? Object.create(null)
     : target;
@@ -108,8 +120,10 @@ export function throwUnexpectedType(value, expected, name) {
 }
 
 export function reachValue(ob, path = '') {
-  if (!ZT.isObject(ob, true)) throwUnexpectedType(ob, 'Object', 'ob')
-  if (!ZT.isString(path, true)) throwUnexpectedType(path, 'String', 'path')
+  const obj = CONSTANTS.Object;
+  const str = CONSTANTS.String;
+  if (!isType(ob, obj)) throwUnexpectedType(ob, obj, 'ob');
+  if (!isType(path, str)) throwUnexpectedType(path, str, 'path');
 
   const steps = path.split('.');
   const result = { key: null, value: null, parent: null };
@@ -118,11 +132,11 @@ export function reachValue(ob, path = '') {
     const key = steps[i];
     const parent = result.value || ob;
     const item = parent[key];
-    const value = ZT.is(item) ? item : null;
+    const value = is(item) ? item : null;
 
     Object.assign(result, { key, parent, value });
 
-    if (!ZT.is(value)) break;
+    if (!is(value)) break;
   }
 
   return result;
