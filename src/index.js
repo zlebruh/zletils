@@ -62,7 +62,7 @@ export class TypedProp {
 
     function set(val) {
       const notSet = !is(state);
-      const sameType = isType(state, val);
+      const sameType = isType(val, type);
       const valueType = getType(val);
 
       if (notSet || sameType) {
@@ -111,7 +111,7 @@ export function is(val) {
 export function throwUnexpectedType(value, expected, name) {
   const typeValue = `[${getType(value)}]`;
   const typeTarget = `[${getType(expected)}]`;
-  const middle = isType(name, '')
+  const middle = isType(name, CONSTANTS.String)
     ? `"${name}" ${typeValue}`
     : typeValue;
 

@@ -57,7 +57,7 @@ test.g // ƒ ohYeah() {}
 
 ## Use an existing object
 ```javascript
-import { typedProps } from 'zle-typed';
+import { typedProps } from 'zletils';
 
 const foo = new Object({ cool: 'story' });
 
@@ -81,7 +81,7 @@ However, if you really, really need a run-time guaruantee for a single property,
 
 Here's how
 ```javascript
-import { typedProp } from 'zle-typed';
+import { typedProp } from 'zletils';
 
 const arr = typedProp([123]);
 console.log(arr); // TypedProp {enumerable: true, get: ƒ, set: ƒ}
