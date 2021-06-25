@@ -9,34 +9,39 @@ const REGEX = {
   email: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)])/, /* jscs:ignore */ // eslint-disable-line
 };
 
-const TYPE_CHECKS = {
-  Array: 'Array.isArray(VALUE)',
-  Boolean: 'typeof VALUE === "boolean"',
-  Element: 'VALUE instanceof HTMLElement',
-  Function: 'VALUE instanceof Function',
-  Number: 'typeof VALUE === "number" && isFinite(VALUE)',
-  Object: 'typeof VALUE === "object" && !Array.isArray(VALUE) && VALUE !== null',
-  String: 'typeof VALUE === "string"',
-  URL: 'REGEX.url.test(VALUE)',
-  ValidEmail: 'REGEX.email.test(VALUE)',
-  ValidIP: 'REGEX.ip.test(VALUE)',
+// #################### EXPORTED ##################
+export const is = (val) => val !== undefined && val !== null;
+
+export const isEmpty = (VALUE) => (
+  VALUE.hasOwnProperty('length')
+    ? Boolean(VALUE.length)
+    : Boolean(Object.keys(VALUE).length)
+);
+
+// ####### Types #######
+export const TYPES = {
+  Array: (VALUE) => Array.isArray(VALUE),
+  Boolean: (VALUE) => typeof VALUE === "boolean",
+  Element: (VALUE) => VALUE instanceof HTMLElement,
+  Function: (VALUE) => VALUE instanceof Function,
+  Number: (VALUE) => typeof VALUE === "number" && isFinite(VALUE),
+  Object: (VALUE) => typeof VALUE === "object" && !Array.isArray(VALUE) && VALUE !== null,
+  String: (VALUE) => typeof VALUE === "string",
+  URL: (VALUE) => REGEX.url.test(VALUE),
+  ValidEmail: (VALUE) => REGEX.email.test(VALUE),
+  ValidIP: (VALUE) => REGEX.ip.test(VALUE),
   // null: 'This one is handled manually',
 };
 
-// #################### EXPORTED ##################
-// ####### Types #######
 export function isType(VALUE, type, checkEmpty = false) {
   try {
     if (VALUE === null) return VALUE === type;
 
-    const result = eval(TYPE_CHECKS[type]) || false;
+    const result = TYPES[type](VALUE) || false;
 
-    if (result && checkEmpty === true) {
-      if (VALUE.hasOwnProperty('length')) return Boolean(VALUE.length);
-      return Boolean(Object.keys(VALUE).length);
-    }
-
-    return result;
+    return result && checkEmpty === true
+      ? isEmpty(VALUE)
+      : result;
   } catch (err) {
     console.warn(err);
     return false;
@@ -104,10 +109,6 @@ export function typedProps(props) {
 };
 
 // ####### Other ######
-export function is(val) {
-  return val !== undefined && val !== null;
-}
-
 export function throwUnexpectedType(value, expected, name) {
   const typeValue = `[${getType(value)}]`;
   const typeTarget = `[${getType(expected)}]`;
@@ -141,3 +142,5 @@ export function reachValue(ob, path = '') {
 
   return result;
 }
+
+export default { TYPES };

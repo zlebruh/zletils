@@ -1,6 +1,6 @@
 {
   "name": "zletils",
-  "version": "0.0.1c",
+  "version": "0.0.1d",
   "description": "My handy utils",
   "main": "src/index.js",
   "directories": {
@@ -15,7 +15,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/zlebruh/zletils/issues"
   },
