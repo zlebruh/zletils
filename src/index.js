@@ -12,11 +12,15 @@ const REGEX = {
 // #################### EXPORTED ##################
 export const is = (val) => val !== undefined && val !== null;
 
-export const isEmpty = (VALUE) => (
-  VALUE.hasOwnProperty('length')
-    ? Boolean(VALUE.length)
-    : Boolean(Object.keys(VALUE).length)
-);
+export const isEmpty = (VALUE) => {
+  try {
+    return VALUE.hasOwnProperty('length')
+      ? Boolean(VALUE.length)
+      : Boolean(Object.keys(VALUE).length)
+  } catch (error) {
+    return false;
+  }
+};
 
 // ####### Types #######
 export const TYPES = {
@@ -40,7 +44,7 @@ export function isType(VALUE, type, checkEmpty = false) {
     const result = TYPES[type](VALUE) || false;
 
     return result && checkEmpty === true
-      ? isEmpty(VALUE)
+      ? !isEmpty(VALUE)
       : result;
   } catch (err) {
     console.warn(err);
