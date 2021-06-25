@@ -1,6 +1,6 @@
 {
   "name": "zletils",
-  "version": "0.0.1e",
+  "version": "0.0.1f",
   "description": "My handy utils",
   "main": "src/index.js",
   "directories": {

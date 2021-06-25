@@ -15,8 +15,8 @@ export const is = (val) => val !== undefined && val !== null;
 export const isEmpty = (VALUE) => {
   try {
     return VALUE.hasOwnProperty('length')
-      ? Boolean(VALUE.length)
-      : Boolean(Object.keys(VALUE).length)
+      ? !Boolean(VALUE.length)
+      : !Boolean(Object.keys(VALUE).length)
   } catch (error) {
     return false;
   }
